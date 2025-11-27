@@ -67,6 +67,9 @@ RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/
     echo 'alias cd="z"' >> ~/.zshrc && \
     chsh -s $(which zsh) || true
 
+# Set zsh with oh-my-zsh as the default shell for the container
+SHELL ["/usr/bin/zsh", "-c"]
+
 RUN curl https://cursor.com/install -fsS | bash
 
 # Install Astronvim and Cursor Agent Neovim integration
