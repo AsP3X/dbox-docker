@@ -39,7 +39,7 @@ This Docker container provides a fully configured development environment based 
 ### Shell Enhancements
 
 - **oh-my-zsh** - Zsh configuration framework with plugins and themes
-- **Zoxide** - Smart directory navigation (replaces `cd`)
+- **Zoxide** - Smart directory navigation (use `z` command)
 - **NVM** - Node Version Manager (v0.40.3)
 
 ## Building the Container
@@ -160,7 +160,7 @@ oh-my-zsh is pre-configured with:
 - **powerlevel10k theme** - A fast and highly customizable theme
 - NVM integration for Node.js version management
 - Zoxide integration for smart directory navigation
-- The `cd` command is aliased to `z` (zoxide) for seamless navigation
+- Use `z` command for zoxide's smart directory navigation, `cd` remains the standard command
 
 ### Customization
 
@@ -204,36 +204,34 @@ See the [oh-my-zsh wiki](https://github.com/ohmyzsh/ohmyzsh/wiki) for more infor
 
 ### Overview
 
-Zoxide replaces the traditional `cd` command with intelligent directory navigation that learns your habits.
+Zoxide provides intelligent directory navigation that learns your habits. Use the `z` command for smart navigation, while `cd` remains the standard command.
 
 ### Usage
 
-The `cd` command is aliased to `z`, so you can use it normally:
+Use `z` for smart directory navigation:
 
 ```bash
 # Navigate to a frequently used directory
-cd project
+z project
 
 # Navigate with partial match
-cd proj
+z proj
 
-# Navigate to parent directory (still works)
-cd ..
-
-# Navigate with absolute path (still works)
+# Use regular cd for standard navigation
 cd /path/to/directory
+cd ..
 ```
 
 ### Zoxide Commands
 
-- `z <directory>` - Jump to a directory (aliased as `cd`)
+- `z <directory>` - Jump to a directory using smart matching
 - `zi <directory>` - Interactive directory selection
 - `zoxide query <pattern>` - Query the database
 - `zoxide add <directory>` - Manually add a directory
 
 ### Configuration
 
-Zoxide is automatically initialized in `.zshrc` (for zsh), `.bashrc`, and `.profile`. The `cd` alias is configured to use `z` for seamless integration.
+Zoxide is automatically initialized in `.zshrc` (for zsh), `.bashrc`, and `.profile`. The `z` command is available for smart directory navigation.
 
 ## Neovim Configuration
 
