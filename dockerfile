@@ -50,8 +50,24 @@ RUN echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc && \
 RUN curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash && \
     echo 'eval "$(zoxide init bash)"' >> ~/.bashrc && \
     echo 'eval "$(zoxide init bash)"' >> ~/.profile && \
-    echo 'alias cd="z"' >> ~/.bashrc && \
-    echo 'alias cd="z"' >> ~/.profile
+    echo 'function cd() {' >> ~/.bashrc && \
+    echo '  if [ $# -eq 0 ]; then' >> ~/.bashrc && \
+    echo '    builtin cd' >> ~/.bashrc && \
+    echo '  elif [ "$1" = "-" ] || [ "$1" = ".." ] || [ "${1:0:1}" = "/" ] || [ "${1:0:2}" = "../" ] || [ "${1:0:2}" = "./" ]; then' >> ~/.bashrc && \
+    echo '    builtin cd "$@"' >> ~/.bashrc && \
+    echo '  else' >> ~/.bashrc && \
+    echo '    __zoxide_z "$@"' >> ~/.bashrc && \
+    echo '  fi' >> ~/.bashrc && \
+    echo '}' >> ~/.bashrc && \
+    echo 'function cd() {' >> ~/.profile && \
+    echo '  if [ $# -eq 0 ]; then' >> ~/.profile && \
+    echo '    builtin cd' >> ~/.profile && \
+    echo '  elif [ "$1" = "-" ] || [ "$1" = ".." ] || [ "${1:0:1}" = "/" ] || [ "${1:0:2}" = "../" ] || [ "${1:0:2}" = "./" ]; then' >> ~/.profile && \
+    echo '    builtin cd "$@"' >> ~/.profile && \
+    echo '  else' >> ~/.profile && \
+    echo '    __zoxide_z "$@"' >> ~/.profile && \
+    echo '  fi' >> ~/.profile && \
+    echo '}' >> ~/.profile
 
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -61,11 +77,27 @@ RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTO
 
 # Configure oh-my-zsh with powerlevel10k theme, nvm and zoxide support
 RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc && \
+    grep -q "plugins=.*zoxide" ~/.zshrc || sed -i 's/^plugins=(\(.*\))/plugins=(\1 zoxide)/' ~/.zshrc && \
+    echo '' >> ~/.zshrc && \
+    echo '# NVM configuration' >> ~/.zshrc && \
     echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc && \
     echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc && \
     echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.zshrc && \
+    echo '' >> ~/.zshrc && \
+    echo '# Initialize zoxide' >> ~/.zshrc && \
     echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc && \
-    echo 'alias cd="z"' >> ~/.zshrc && \
+    echo '' >> ~/.zshrc && \
+    echo '# Custom cd function that integrates with zoxide' >> ~/.zshrc && \
+    echo '# This must be defined after zoxide init to override default behavior' >> ~/.zshrc && \
+    echo 'function cd() {' >> ~/.zshrc && \
+    echo '  if [ $# -eq 0 ]; then' >> ~/.zshrc && \
+    echo '    builtin cd' >> ~/.zshrc && \
+    echo '  elif [ "$1" = "-" ] || [ "$1" = ".." ] || [[ "$1" =~ ^/ ]] || [[ "$1" =~ ^\.\.?/ ]]; then' >> ~/.zshrc && \
+    echo '    builtin cd "$@"' >> ~/.zshrc && \
+    echo '  else' >> ~/.zshrc && \
+    echo '    __zoxide_z "$@"' >> ~/.zshrc && \
+    echo '  fi' >> ~/.zshrc && \
+    echo '}' >> ~/.zshrc && \
     chsh -s $(which zsh) || true
 
 # Set zsh with oh-my-zsh as the default shell for the container
