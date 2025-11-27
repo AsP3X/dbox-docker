@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     trash-cli \
     libglib2.0-bin \
     ruby-full \
+    sudo nano \
     zsh && \
     npm config set prefix /usr/local && \
     npm install -g tree-sitter-cli neovim @mermaid-js/mermaid-cli && \
