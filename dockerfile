@@ -47,7 +47,7 @@ RUN echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc && \
     echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.profile
 
 # Install pnpm
-RUN curl -fsSL https://get.pnpm.io/install.sh | sh - && \
+RUN SHELL=bash curl -fsSL https://get.pnpm.io/install.sh | bash - && \
     echo 'export PNPM_HOME="$HOME/.local/share/pnpm"' >> ~/.bashrc && \
     echo 'export PATH="$PNPM_HOME:$PATH"' >> ~/.bashrc && \
     echo 'export PNPM_HOME="$HOME/.local/share/pnpm"' >> ~/.profile && \
