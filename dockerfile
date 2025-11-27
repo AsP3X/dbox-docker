@@ -84,7 +84,14 @@ RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/
 # Set zsh with oh-my-zsh as the default shell for the container
 SHELL ["/usr/bin/zsh", "-c"]
 
-RUN curl https://cursor.com/install -fsS | bash
+# Install Cursor Agent
+# Ensure ~/.local/bin exists and is in PATH for the installation
+RUN mkdir -p /root/.local/bin && \
+    export PATH="/root/.local/bin:${PATH}" && \
+    curl https://cursor.com/install -fsS | bash && \
+    test -f /root/.local/bin/cursor-agent && chmod +x /root/.local/bin/cursor-agent && \
+    test -L /root/.local/bin/cursor-agent && chmod +x $(readlink -f /root/.local/bin/cursor-agent) 2>/dev/null || true && \
+    /root/.local/bin/cursor-agent --version 2>&1 | head -1 || echo "Warning: cursor-agent may need PATH configuration"
 
 # Install Astronvim and Cursor Agent Neovim integration
 RUN mkdir -p /root/.config /root/.local/share/nvim /root/.local/state/nvim /root/.cache/nvim && \
@@ -327,6 +334,8 @@ RUN nvim --version && \
     which rg && \
     which node && \
     which python3 && \
+    which cursor-agent && \
+    cursor-agent --version && \
     chmod -R 755 /root/.config /root/.local && \
     nvim --headless "+checkhealth" "+wq /tmp/nvim-health.log" +qa 2>&1 || true && \
     cat /tmp/nvim-health.log 2>/dev/null | tail -100 || true
