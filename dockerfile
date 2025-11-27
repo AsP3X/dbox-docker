@@ -46,6 +46,13 @@ RUN echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc && \
     echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.profile && \
     echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.profile
 
+# Install pnpm
+RUN curl -fsSL https://get.pnpm.io/install.sh | sh - && \
+    echo 'export PNPM_HOME="$HOME/.local/share/pnpm"' >> ~/.bashrc && \
+    echo 'export PATH="$PNPM_HOME:$PATH"' >> ~/.bashrc && \
+    echo 'export PNPM_HOME="$HOME/.local/share/pnpm"' >> ~/.profile && \
+    echo 'export PATH="$PNPM_HOME:$PATH"' >> ~/.profile
+
 # Install zoxide (smarter directory navigation)
 RUN curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash && \
     echo 'eval "$(zoxide init bash)"' >> ~/.bashrc && \
@@ -57,7 +64,7 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 # Install powerlevel10k theme
 RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 
-# Configure oh-my-zsh with powerlevel10k theme, nvm and zoxide support
+# Configure oh-my-zsh with powerlevel10k theme, nvm, pnpm and zoxide support
 RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc && \
     grep -q "plugins=.*zoxide" ~/.zshrc || sed -i 's/^plugins=(\(.*\))/plugins=(\1 zoxide)/' ~/.zshrc && \
     echo '' >> ~/.zshrc && \
@@ -65,6 +72,10 @@ RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/
     echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc && \
     echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc && \
     echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.zshrc && \
+    echo '' >> ~/.zshrc && \
+    echo '# pnpm configuration' >> ~/.zshrc && \
+    echo 'export PNPM_HOME="$HOME/.local/share/pnpm"' >> ~/.zshrc && \
+    echo 'export PATH="$PNPM_HOME:$PATH"' >> ~/.zshrc && \
     echo '' >> ~/.zshrc && \
     echo '# Initialize zoxide' >> ~/.zshrc && \
     echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc && \
