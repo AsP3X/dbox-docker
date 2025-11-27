@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     texlive-latex-base \
     trash-cli \
     libglib2.0-bin \
-    ruby-full && \
+    ruby-full \
+    zsh && \
     npm config set prefix /usr/local && \
     npm install -g tree-sitter-cli neovim @mermaid-js/mermaid-cli && \
     gem install neovim && \
@@ -50,6 +51,21 @@ RUN curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.s
     echo 'eval "$(zoxide init bash)"' >> ~/.profile && \
     echo 'alias cd="z"' >> ~/.bashrc && \
     echo 'alias cd="z"' >> ~/.profile
+
+# Install oh-my-zsh
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+# Install powerlevel10k theme
+RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+
+# Configure oh-my-zsh with powerlevel10k theme, nvm and zoxide support
+RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc && \
+    echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc && \
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc && \
+    echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.zshrc && \
+    echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc && \
+    echo 'alias cd="z"' >> ~/.zshrc && \
+    chsh -s $(which zsh) || true
 
 RUN curl https://cursor.com/install -fsS | bash
 

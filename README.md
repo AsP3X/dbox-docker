@@ -9,6 +9,7 @@ This Docker container provides a fully configured development environment based 
 - **Neovim** with AstroNvim configuration
 - **Node Version Manager (nvm)** for flexible Node.js version management
 - **Zoxide** for intelligent directory navigation
+- **oh-my-zsh** - A delightful community-driven framework for managing zsh configuration
 - **Cursor Agent** integration
 - Comprehensive development tooling
 
@@ -37,6 +38,7 @@ This Docker container provides a fully configured development environment based 
 
 ### Shell Enhancements
 
+- **oh-my-zsh** - Zsh configuration framework with plugins and themes
 - **Zoxide** - Smart directory navigation (replaces `cd`)
 - **NVM** - Node Version Manager (v0.40.3)
 
@@ -137,10 +139,66 @@ nvm list-remote
 
 ### NVM Configuration
 
-NVM is automatically initialized in both `.bashrc` and `.profile`, making it available in:
-- Interactive shells
+NVM is automatically initialized in `.zshrc` (for zsh), `.bashrc`, and `.profile`, making it available in:
+- Interactive shells (zsh and bash)
 - Non-interactive shells
 - Scripts
+
+## oh-my-zsh
+
+### Overview
+
+oh-my-zsh is a delightful, open source, community-driven framework for managing your zsh configuration. It comes bundled with thousands of helpful functions, helpers, plugins, themes, and a few things that make you shout "OH MY ZSHELL!".
+
+### Default Shell
+
+Zsh with oh-my-zsh is set as the default shell for the container. When you start an interactive session, you'll automatically use zsh.
+
+### Configuration
+
+oh-my-zsh is pre-configured with:
+- **powerlevel10k theme** - A fast and highly customizable theme
+- NVM integration for Node.js version management
+- Zoxide integration for smart directory navigation
+- The `cd` command is aliased to `z` (zoxide) for seamless navigation
+
+### Customization
+
+You can customize oh-my-zsh by editing `~/.zshrc`:
+
+```bash
+# Change theme (default: powerlevel10k)
+ZSH_THEME="powerlevel10k/powerlevel10k"  # or any other theme from ~/.oh-my-zsh/themes/
+
+# Enable/disable plugins
+plugins=(git nvm zoxide)  # Add or remove plugins as needed
+```
+
+### powerlevel10k Theme
+
+The container comes with the **powerlevel10k** theme pre-installed and configured. This theme provides:
+- Fast prompt rendering
+- Rich git status information
+- Customizable appearance
+- Built-in configuration wizard (run `p10k configure` after first login)
+
+To customize the theme, run:
+```bash
+p10k configure
+```
+
+This will launch an interactive configuration wizard to customize colors, icons, and prompt elements.
+
+### Available Plugins
+
+oh-my-zsh comes with many plugins. Some useful ones include:
+- `git` - Git aliases and functions
+- `docker` - Docker aliases
+- `npm` - npm aliases
+- `python` - Python aliases
+- `zoxide` - Zoxide integration (already configured)
+
+See the [oh-my-zsh wiki](https://github.com/ohmyzsh/ohmyzsh/wiki) for more information and available plugins.
 
 ## Zoxide (Smart Directory Navigation)
 
@@ -175,7 +233,7 @@ cd /path/to/directory
 
 ### Configuration
 
-Zoxide is automatically initialized in both `.bashrc` and `.profile`. The `cd` alias is configured to use `z` for seamless integration.
+Zoxide is automatically initialized in `.zshrc` (for zsh), `.bashrc`, and `.profile`. The `cd` alias is configured to use `z` for seamless integration.
 
 ## Neovim Configuration
 
@@ -248,6 +306,7 @@ return {
 
 Edit the following files in the container:
 
+- `~/.zshrc` - Zsh configuration (oh-my-zsh)
 - `~/.bashrc` - Bash configuration
 - `~/.profile` - Profile configuration
 
@@ -273,6 +332,8 @@ You can install additional tools by:
 │   ├── state/            # State files
 │   └── cache/            # Cache files
 ├── .nvm/                 # NVM installation
+├── .oh-my-zsh/           # oh-my-zsh installation
+├── .zshrc                # Zsh configuration (oh-my-zsh)
 ├── .bashrc               # Bash configuration
 └── .profile              # Profile configuration
 ```
@@ -294,7 +355,23 @@ source ~/.profile
 Ensure zoxide is initialized:
 
 ```bash
+# For zsh
+eval "$(zoxide init zsh)"
+
+# For bash
 eval "$(zoxide init bash)"
+```
+
+### oh-my-zsh Not Loading
+
+If oh-my-zsh doesn't load automatically, ensure you're using zsh:
+
+```bash
+# Check current shell
+echo $SHELL
+
+# Switch to zsh if needed
+zsh
 ```
 
 ### Neovim Health Check
@@ -317,6 +394,8 @@ docker build --no-cache -t dev-container .
 
 - **Ubuntu**: 24.04 (configurable)
 - **NVM**: v0.40.3
+- **oh-my-zsh**: Latest version
+- **Zsh**: Latest version from Ubuntu repositories
 - **Neovim**: Latest release
 - **AstroNvim**: Latest template version
 
