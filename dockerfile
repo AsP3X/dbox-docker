@@ -25,7 +25,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-bin \
     ruby-full \
     sudo nano \
-    zsh && \
+    zsh \
+    irssi && \
     npm config set prefix /usr/local && \
     npm install -g tree-sitter-cli neovim @mermaid-js/mermaid-cli && \
     gem install neovim && \
@@ -66,13 +67,10 @@ RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygi
     chmod +x /usr/local/bin/lazygit && \
     rm lazygit.tar.gz
 
-# Install simplex CLI
-# The install script installs to ~/.local/bin/simplex-chat
-RUN mkdir -p /root/.local/bin && \
-    export PATH="/root/.local/bin:${PATH}" && \
-    curl -o- https://raw.githubusercontent.com/simplex-chat/simplex-chat/stable/install.sh | bash && \
-    chmod +x /root/.local/bin/simplex-chat && \
-    /root/.local/bin/simplex-chat --version
+# Setup IRSSI configuration directory
+# IRSSI is installed via apt-get in the main package installation above
+RUN mkdir -p /root/.irssi && \
+    irssi --version
 
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -354,8 +352,8 @@ RUN nvim --version && \
     cursor-agent --version && \
     which lazygit && \
     lazygit --version && \
-    which simplex-chat && \
-    simplex-chat --version && \
+    which irssi && \
+    irssi --version && \
     chmod -R 755 /root/.config /root/.local && \
     nvim --headless "+checkhealth" "+wq /tmp/nvim-health.log" +qa 2>&1 || true && \
     cat /tmp/nvim-health.log 2>/dev/null | tail -100 || true
