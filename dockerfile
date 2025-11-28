@@ -58,6 +58,14 @@ RUN curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.s
     echo 'eval "$(zoxide init bash)"' >> ~/.bashrc && \
     echo 'eval "$(zoxide init bash)"' >> ~/.profile
 
+# Install lazygit
+RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
+    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION#v}_Linux_x86_64.tar.gz" && \
+    tar xf lazygit.tar.gz lazygit && \
+    mv lazygit /usr/local/bin && \
+    chmod +x /usr/local/bin/lazygit && \
+    rm lazygit.tar.gz
+
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
@@ -336,6 +344,8 @@ RUN nvim --version && \
     which python3 && \
     which cursor-agent && \
     cursor-agent --version && \
+    which lazygit && \
+    lazygit --version && \
     chmod -R 755 /root/.config /root/.local && \
     nvim --headless "+checkhealth" "+wq /tmp/nvim-health.log" +qa 2>&1 || true && \
     cat /tmp/nvim-health.log 2>/dev/null | tail -100 || true
